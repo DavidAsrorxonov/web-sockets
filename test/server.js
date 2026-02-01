@@ -15,4 +15,12 @@ wss.on("connection", (socket, request) => {
         client.send(`Server broadcast: ${message}`);
     });
   });
+
+  socket.on("error", (err) => {
+    console.error(`Error ${err} on: ${ip}`);
+  });
+
+  socket.on("close", () => {
+    console.log("Client disconnected");
+  });
 });
