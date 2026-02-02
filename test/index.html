@@ -18,7 +18,59 @@
         overflow-y: scroll;
         border: 1px solid #333;
       }
+      .status-on {
+        color: #00ff00;
+      }
+      .status-off {
+        color: #ff0000;
+      }
     </style>
   </head>
-  <body></body>
+  <body>
+    <h1>Web Socket Broadcast Console</h1>
+    <p id="status" class="status-off">Connecting...</p>
+    <form action="" id="message-form">
+      <input
+        type="text"
+        id="message-input"
+        placeholder="Send Cargo..."
+        required
+      />
+      <button type="submit">Deploy Message</button>
+    </form>
+
+    <h3>Live Stream Logs</h3>
+    <pre id="log"></pre>
+  </body>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const log = document.getElementById("log");
+    const input = document.getElementById("message-input");
+
+    const socket = new WebSocket("ws://localhost:8080");
+
+    const appendLog = (label, message) => {
+      const entry = `${new Date().toLocaleTimeString()} ${label} ${message}\n`;
+
+      log.textContent = entry + log.textContent;
+      log.scrollTop = 0;
+    };
+
+    socket.addEventListener("open", () => {
+      statusEl.textContent = "CONNECTED: ws://localhost:8080";
+      statusEl.className = "status-on";
+      appendLog("[SYSTEM]", "Tunnel established");
+    });
+
+    socket.addEventListener("close", () => {
+      statusEl.textContent = "DISCONNECTED: ws://localhost:8080";
+      statusEl.className = "status-off";
+      appendLog("[SYSTEM]", "Tunnel closed");
+    });
+
+    socket.addEventListener("message", (event) => {
+      appendLog("[RECEIVED]", event.data);
+    });
+  </script>
 </html>
