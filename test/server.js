@@ -24,3 +24,5 @@ wss.on("connection", (socket, request) => {
     console.log("Client disconnected");
   });
 });
+
+console.log("WebSocket server is live on ws://localhost:8080");
